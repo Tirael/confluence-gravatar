@@ -33,7 +33,7 @@ public class UserInfoResource {
 
         User user = AuthenticatedUserThreadLocal.getUser();
         if (user.getEmail() != null && !StringUtils.isBlank(user.getEmail())) {
-            userInfo.setUrl(UrlUtil.getGravatarUrlFromEmail(user.getEmail()));
+            userInfo.setUrl(UrlUtil.getRedirectUrlFromEmail(user.getEmail()));
         }
         userInfo.setUsing(UrlUtil.isRedirectUrl(userAccessor.getUserProfilePicture(user).getDownloadPath()));
 

@@ -19,7 +19,7 @@ AJS.$.get(AJS.contextPath() + '/rest/gravatar/latest/userinfo', function(info){
             AJS.$('.edit-my-picture-profile').append(AJS.format(useGravatarTemplate,
                 AJS.contextPath() + '/plugins/gravatar/use.action',
                 AJS.I18n.getText('gravatar.use'),
-                info.url,
+                AJS.contextPath() + info.url,
                 info.using?'userphoto-selected':'',
                 AJS.I18n.getText('gravatar.use.button')
             ));

@@ -12,12 +12,12 @@ public class UrlUtil {
     private static final int ICON_SIZE = 48;
     private static final String GRAVATAR_PATH = "/images/icons/profilepics/gravatar.png";
 
-    public static String getGravatarUrlFromMd5(String md5) {
-        return "https://secure.gravatar.com/avatar/" + md5 + ".png?s=" + ICON_SIZE;
+    public static String getGravatarUrlFromMd5(String md5, boolean secure) {
+        return (secure ? "https://secure" : "http://www") + ".gravatar.com/avatar/" + md5 + ".png?s=" + ICON_SIZE;
     }
 
-    public static String getGravatarUrlFromEmail(String email) {
-        return getGravatarUrlFromMd5(DigestUtils.md5Hex(email));
+    public static String getGravatarUrlFromEmail(String email, boolean secure) {
+        return getGravatarUrlFromMd5(DigestUtils.md5Hex(email), secure);
     }
 
     public static String getRedirectUrlFromMd5(String md5) {

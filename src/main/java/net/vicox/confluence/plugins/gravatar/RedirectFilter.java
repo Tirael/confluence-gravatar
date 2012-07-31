@@ -23,7 +23,7 @@ public class RedirectFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         String md5 = httpRequest.getParameter("md5");
-        httpResponse.setHeader("Location", UrlUtil.getGravatarUrlFromMd5(md5));
+        httpResponse.setHeader("Location", UrlUtil.getGravatarUrlFromMd5(md5, request.isSecure()));
         httpResponse.setStatus(httpResponse.SC_MOVED_PERMANENTLY);
     }
 
