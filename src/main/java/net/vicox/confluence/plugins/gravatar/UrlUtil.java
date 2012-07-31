@@ -13,7 +13,7 @@ public class UrlUtil {
     private static final String GRAVATAR_PATH = "/images/icons/profilepics/gravatar.png";
 
     public static String getGravatarUrlFromMd5(String md5) {
-        return "http://www.gravatar.com/avatar/" + md5 + ".png?s=" + ICON_SIZE;
+        return "https://secure.gravatar.com/avatar/" + md5 + ".png?s=" + ICON_SIZE;
     }
 
     public static String getGravatarUrlFromEmail(String email) {
