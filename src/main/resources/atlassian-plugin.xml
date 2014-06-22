@@ -21,17 +21,15 @@
     <rest key="gravatarRest" path="/gravatar" version="1.0" />
 
     <xwork key="gravatarAction">
-        <package extends="default" namespace="/plugins/gravatar">
+        <package key="gravatar" extends="default" namespace="/plugins/gravatar">
             <default-interceptor-ref name="defaultStack" />
-            <action name="use" class="net.vicox.confluence.plugins.gravatar.UseAction">
+            <action name="import" class="net.vicox.confluence.plugins.gravatar.GravatarImportAction">
                 <result name="success" type="redirect">/users/editmyprofilepicture.action</result>
             </action>
         </package>
     </xwork>
 
-    <servlet-filter key="gravatarRedirectFilter" class="net.vicox.confluence.plugins.gravatar.RedirectFilter" location="before-dispatch" weight="200">
-        <url-pattern>/images/icons/profilepics/gravatar.png</url-pattern>
-        <dispatcher>REQUEST</dispatcher>
-        <dispatcher>FORWARD</dispatcher>
-    </servlet-filter>
+    <component key="gravatarImporter" class="net.vicox.confluence.plugins.gravatar.ProfilePictureGravatarImporter">
+        <interface>net.vicox.confluence.plugins.gravatar.GravatarImporter</interface>
+    </component>
 </atlassian-plugin>
