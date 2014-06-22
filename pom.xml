@@ -72,14 +72,14 @@
 
     <distributionManagement>
         <repository>
-            <id>atlassian-contrib</id>
-            <name>Atlassian Contrib Repository</name>
-            <url>dav:https://maven.atlassian.com/contrib</url>
+            <id>bitbucket-releases</id>
+            <name>Bitbucket Releases Repository</name>
+            <url>${bitbucket.repository}/releases</url>
         </repository>
         <snapshotRepository>
-            <id>atlassian-contrib-snapshot</id>
-            <name>Atlassian Contrib Snapshot Repository</name>
-            <url>dav:https://maven.atlassian.com/contrib-snapshot</url>
+            <id>bitbucket-snapshots</id>
+            <name>Bitbucket Snapshots Repository</name>
+            <url>${bitbucket.repository}/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
 
