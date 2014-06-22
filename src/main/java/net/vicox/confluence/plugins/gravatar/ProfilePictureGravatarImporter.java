@@ -10,6 +10,8 @@ import com.atlassian.confluence.user.service.DeleteProfilePictureCommandImpl;
 import com.atlassian.confluence.user.service.SetProfilePictureFromImageCommandImpl;
 import com.atlassian.user.User;
 import org.apache.commons.codec.binary.Hex;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -25,6 +27,8 @@ import java.util.Date;
  */
 public class ProfilePictureGravatarImporter implements GravatarImporter {
 
+    private static final Logger log = LoggerFactory.getLogger(ProfilePictureGravatarImporter.class);
+
     private static final String INTERNAL_FILE_NAME_PREFIX = "gravatar-";
 
     protected PersonalInformationManager personalInformationManager;
@@ -39,14 +43,17 @@ public class ProfilePictureGravatarImporter implements GravatarImporter {
         Attachment oldGravatarAttachment = getGravatarAttachment(user);
 
         if (oldGravatarAttachment == null) {
+            log.debug("setting gravatar as profile picture for user {}", user.getName());
             newSetProfilePictureCommand(user, new ByteArrayInputStream(newGravatar), newGravatarFileName).execute();
 
         } else if (!oldGravatarAttachment.getFileName().equals(newGravatarFileName)) {
+            log.debug("updating the gravatar profile picture with new gravatar for user {}", user.getName());
             PersonalInformation userPersonalInformation = personalInformationManager.getOrCreatePersonalInformation(user);
             attachmentManager.moveAttachment(oldGravatarAttachment, newGravatarFileName, userPersonalInformation);
             newSetProfilePictureCommand(user, new ByteArrayInputStream(newGravatar), newGravatarFileName).execute();
 
         } else {
+            log.debug("updating the gravatar profile pictures last modification date for user {}", user.getName());
             oldGravatarAttachment.setLastModificationDate(new Date());
         }
     }
@@ -68,6 +75,7 @@ public class ProfilePictureGravatarImporter implements GravatarImporter {
 
     @Override
     public void removeGravatar(User user) {
+        log.debug("removing gravatar profile picture for user {}", user.getName());
         Attachment gravatarAttachment = getGravatarAttachment(user);
         if (gravatarAttachment != null) {
             newDeleteProfilePictureCommand(user, gravatarAttachment.getFileName()).execute();
