@@ -12,8 +12,8 @@ AJS.$.get(AJS.contextPath() + '/rest/gravatar/latest/info', function(info){
                     </label> \
                 </div> \
                 <div class="default-user-pics-buttons"> \
-                    <input class="aui-button" type="submit" name="save" value="{8}">\
-                    <input class="aui-button" type="submit" name="delete" value="{7}">\
+                    <input class="aui-button" type="submit" name="save" value="{6}">\
+                    <input class="aui-button" type="submit" name="delete" value="{5}">\
                 </div>\
                 </fieldset> \
             </form>';
@@ -28,7 +28,7 @@ AJS.$.get(AJS.contextPath() + '/rest/gravatar/latest/info', function(info){
                         </label> \
                     </div> \
                     <div class="default-user-pics-buttons"> \
-                        <input class="aui-button aui-button-primary" type="submit" name="save" value="{6}">\
+                        <input class="aui-button aui-button-primary" type="submit" name="save" value="{4}">\
                     </div>\
                 </fieldset> \
             </form>';
@@ -41,11 +41,9 @@ AJS.$.get(AJS.contextPath() + '/rest/gravatar/latest/info', function(info){
                 /* 1 */ info.gravatarUrl,
                 /* 2 */ AJS.contextPath() + info.importedPicturePath,
                 /* 3 */ AJS.I18n.getText('gravatar.header'),
-                /* 4 */ AJS.I18n.getText('gravatar.actual.header'),
-                /* 5 */ AJS.I18n.getText('gravatar.imported.header'),
-                /* 6 */ AJS.I18n.getText('gravatar.import.button'),
-                /* 7 */ AJS.I18n.getText('gravatar.delete.button'),
-                /* 8 */ AJS.I18n.getText('gravatar.update.button')
+                /* 4 */ AJS.I18n.getText('gravatar.import.button'),
+                /* 5 */ AJS.I18n.getText('gravatar.delete.button'),
+                /* 6 */ AJS.I18n.getText('gravatar.update.button')
             ));
         });
     }
