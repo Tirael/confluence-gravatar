@@ -115,11 +115,13 @@ public class ProfilePictureGravatarImporter implements GravatarImporter {
     }
 
     protected Attachment getGravatarAttachment(User user) {
-        PersonalInformation userPersonalInformation = personalInformationManager.getOrCreatePersonalInformation(user);
+        if (personalInformationManager.hasPersonalInformation(user.getName())) {
+            PersonalInformation userPersonalInformation = personalInformationManager.getOrCreatePersonalInformation(user);
 
-        for(Attachment attachment: attachmentManager.getLatestVersionsOfAttachments(userPersonalInformation)) {
-            if (isInternalGravatarFileName(attachment.getFileName())) {
-                return attachment;
+            for (Attachment attachment : attachmentManager.getLatestVersionsOfAttachments(userPersonalInformation)) {
+                if (isInternalGravatarFileName(attachment.getFileName())) {
+                    return attachment;
+                }
             }
         }
         return null;
