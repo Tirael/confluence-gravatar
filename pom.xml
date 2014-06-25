@@ -66,8 +66,8 @@
     </build>
 
     <scm>
-        <connection>scm:git:ssh://git@bitbucket.org/vicox/confluence-gravatar.git</connection>
-        <developerConnection>scm:git:ssh://git@bitbucket.org/vicox/confluence-gravatar.git</developerConnection>
+        <connection>scm:git:git@bitbucket.org:vicox/confluence-gravatar.git</connection>
+        <developerConnection>scm:git:git@bitbucket.org:vicox/confluence-gravatar.git</developerConnection>
         <url>https://bitbucket.org/vicox/confluence-gravatar</url>
     </scm>
 
