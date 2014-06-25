@@ -8,7 +8,7 @@ AJS.$.get(AJS.contextPath() + '/rest/gravatar/latest/info', function(info){
                 <fieldset class="default-icon-set"> \
                 <div class="default-user-pics gravatar"> \
                     <label for="userProfilePictureName.gravatar-imported"> \
-                        <img src="{2}" class="userphoto" alt="Available picture: gravatar-imported"> \
+                        <img src="{1}" class="userphoto" alt="Available picture: gravatar-imported"> \
                     </label> \
                 </div> \
                 <div class="default-user-pics-buttons"> \
@@ -28,7 +28,7 @@ AJS.$.get(AJS.contextPath() + '/rest/gravatar/latest/info', function(info){
                         </label> \
                     </div> \
                     <div class="default-user-pics-buttons"> \
-                        <input class="aui-button aui-button-primary" type="submit" name="save" value="{4}">\
+                        <input class="aui-button" type="submit" name="save" value="{4}">\
                     </div>\
                 </fieldset> \
             </form>';
