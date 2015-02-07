@@ -8,13 +8,13 @@ import com.atlassian.core.task.TaskQueue;
 import com.atlassian.event.api.EventListener;
 import com.atlassian.event.api.EventPublisher;
 import net.vicox.confluence.plugins.gravatar.service.GravatarImportService;
-import net.vicox.confluence.plugins.gravatar.GravatarImportTask;
+import net.vicox.confluence.plugins.gravatar.task.GravatarImportTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 
 /**
- * Listens for the login event and creates {@link net.vicox.confluence.plugins.gravatar.GravatarImportTask}s.
+ * Listens for the login event and creates {@link net.vicox.confluence.plugins.gravatar.task.GravatarImportTask}s.
  *
  * @author Georg Schmidl
  */

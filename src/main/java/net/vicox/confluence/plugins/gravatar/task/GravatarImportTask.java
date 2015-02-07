@@ -1,4 +1,4 @@
-package net.vicox.confluence.plugins.gravatar;
+package net.vicox.confluence.plugins.gravatar.task;
 
 import com.atlassian.confluence.user.UserAccessor;
 import com.atlassian.core.task.Task;
