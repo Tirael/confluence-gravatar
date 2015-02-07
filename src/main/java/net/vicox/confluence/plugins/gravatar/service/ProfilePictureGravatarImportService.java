@@ -139,10 +139,16 @@ public class ProfilePictureGravatarImportService implements GravatarImportServic
 
     @Override
     public void removeGravatar(User user) {
-        log.debug("removing gravatar profile picture for user {}", user.getName());
-        Attachment gravatarAttachment = getGravatarAttachment(user);
-        if (gravatarAttachment != null) {
-            newDeleteProfilePictureCommand(user, gravatarAttachment.getFileName()).execute();
+        if (SystemUtil.profilePictureCommandIsDeprecated()) {
+            // should be implemented when Confluence gets a delete avatar function
+            throw new UnsupportedOperationException();
+
+        } else { // Confluence < 5.7
+            log.debug("removing gravatar profile picture for user {}", user.getName());
+            Attachment gravatarAttachment = getGravatarAttachment(user);
+            if (gravatarAttachment != null) {
+                newDeleteProfilePictureCommand(user, gravatarAttachment.getFileName()).execute();
+            }
         }
     }
 
