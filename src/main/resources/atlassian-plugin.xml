@@ -15,6 +15,7 @@
         </transformation>
         <resource type="download" name="gravatar.css" location="gravatar.css"/>
         <resource type="download" name="gravatar.js" location="gravatar.js"/>
+        <dependency>com.atlassian.auiplugin:dialog2</dependency>
         <context>atl.userprofile</context>
     </web-resource>
 
@@ -23,15 +24,15 @@
     <xwork key="gravatarAction">
         <package key="gravatar" extends="default" namespace="/plugins/gravatar">
             <default-interceptor-ref name="defaultStack" />
-            <action name="import" class="net.vicox.confluence.plugins.gravatar.GravatarImportAction">
+            <action name="import" class="net.vicox.confluence.plugins.gravatar.action.GravatarImportAction">
                 <result name="success" type="redirect">/users/editmyprofilepicture.action</result>
             </action>
         </package>
     </xwork>
 
-    <component key="gravatarImporter" class="net.vicox.confluence.plugins.gravatar.ProfilePictureGravatarImporter">
-        <interface>net.vicox.confluence.plugins.gravatar.GravatarImporter</interface>
+    <component key="gravatarImporter" class="net.vicox.confluence.plugins.gravatar.service.ProfilePictureGravatarImportService">
+        <interface>net.vicox.confluence.plugins.gravatar.service.GravatarImportService</interface>
     </component>
 
-    <component key="gravatarImportListener" class="net.vicox.confluence.plugins.gravatar.GravatarImportListener"/>
+    <component key="gravatarImportListener" class="net.vicox.confluence.plugins.gravatar.listener.GravatarImportListener"/>
 </atlassian-plugin>

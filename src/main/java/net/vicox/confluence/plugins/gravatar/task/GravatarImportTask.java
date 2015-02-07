@@ -1,8 +1,9 @@
-package net.vicox.confluence.plugins.gravatar;
+package net.vicox.confluence.plugins.gravatar.task;
 
 import com.atlassian.confluence.user.UserAccessor;
 import com.atlassian.core.task.Task;
 import com.atlassian.user.User;
+import net.vicox.confluence.plugins.gravatar.service.GravatarImportService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,13 +18,13 @@ public class GravatarImportTask implements Task {
 
     private static final Logger log = LoggerFactory.getLogger(GravatarImportTask.class);
 
-    private final GravatarImporter gravatarImporter;
+    private final GravatarImportService gravatarImportService;
     private final UserAccessor userAccessor;
 
     private final String username;
 
-    public GravatarImportTask(GravatarImporter gravatarImporter, UserAccessor userAccessor, String username) {
-        this.gravatarImporter = gravatarImporter;
+    public GravatarImportTask(GravatarImportService gravatarImportService, UserAccessor userAccessor, String username) {
+        this.gravatarImportService = gravatarImportService;
         this.userAccessor = userAccessor;
         this.username = username;
     }
@@ -34,10 +35,10 @@ public class GravatarImportTask implements Task {
 
         User user = userAccessor.getUserByName(username);
         if (user != null) {
-            Date lastUpdated = gravatarImporter.getLastImportedDate(user);
+            Date lastUpdated = gravatarImportService.getLastImportedDate(user);
 
             if (lastUpdated != null && new Date().getTime() - (24 * 60 * 60 * 1000) > lastUpdated.getTime()) {
-                gravatarImporter.importGravatar(user);
+                gravatarImportService.importGravatar(user);
             }
         }
     }

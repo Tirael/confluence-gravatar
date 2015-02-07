@@ -1,3 +1,17 @@
+/* form */
 .gravatar img.userphoto {
     cursor: auto;
+}
+
+/* uploader */
+#gravatar-importer {
+  margin-top: 10px;
+}
+
+#gravatar-importer-button {
+  width: 128px;
+}
+
+#gravatar-importer-dialog .aui-dialog2-content {
+  text-align: center;
 }
