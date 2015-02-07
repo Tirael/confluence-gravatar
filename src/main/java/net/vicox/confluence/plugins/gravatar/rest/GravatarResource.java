@@ -26,6 +26,12 @@ public class GravatarResource {
 
     private GravatarImportService gravatarImportService;
 
+    /**
+     * Returns the user's Gravatar URL and the imported profile picture URL.
+     *
+     * @param request the HTTP request
+     * @return {@link net.vicox.confluence.plugins.gravatar.rest.GravatarInfo}
+     */
     @GET
     @AnonymousAllowed
     @Produces({MediaType.APPLICATION_JSON})
@@ -46,6 +52,12 @@ public class GravatarResource {
         return Response.ok(gravatarInfo).build();
     }
 
+    /**
+     * Imports the user's Gravatar and returns the Gravatar URL and the imported profile picture URL.
+     *
+     * @param request the HTTP request
+     * @return {@link net.vicox.confluence.plugins.gravatar.rest.GravatarInfo}
+     */
     @GET
     @AnonymousAllowed
     @Produces({MediaType.APPLICATION_JSON})

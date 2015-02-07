@@ -7,6 +7,7 @@ import net.vicox.confluence.plugins.gravatar.service.GravatarImportService;
 
 /**
  * Action for importing the user's Gravatar picture.
+ * Used in Confluence < 5.7
  *
  * @author Georg Schmidl
  */

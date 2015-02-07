@@ -64,7 +64,8 @@ public class ProfilePictureGravatarImportService implements GravatarImportServic
         if (SystemUtil.profilePictureCommandIsDeprecated()) {
             Attachment gravatarAttachment = saveOrUpdateUserAttachment(user, gravatarData, gravatarFileName);
             userAccessor.setUserProfilePicture(user, gravatarAttachment);
-        } else {
+
+        } else { // Confluence < 5.7
             newSetProfilePictureCommand(user, new ByteArrayInputStream(gravatarData), gravatarFileName).execute();
         }
     }
@@ -76,7 +77,8 @@ public class ProfilePictureGravatarImportService implements GravatarImportServic
         if (SystemUtil.profilePictureCommandIsDeprecated()) {
             gravatarAttachment = saveOrUpdateUserAttachment(user, gravatarData, gravatarFileName);
             userAccessor.setUserProfilePicture(user, gravatarAttachment);
-        } else {
+
+        } else { // Confluence < 5.7
             newSetProfilePictureCommand(user, new ByteArrayInputStream(gravatarData), gravatarFileName).execute();
         }
     }

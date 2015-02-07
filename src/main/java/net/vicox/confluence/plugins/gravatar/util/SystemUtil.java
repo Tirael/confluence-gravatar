@@ -5,6 +5,8 @@ import com.atlassian.confluence.user.service.SetProfilePictureFromImageCommandIm
 import java.lang.annotation.Annotation;
 
 /**
+ * Functions concerning the underlying system.
+ *
  * @author Georg Schmidl
  */
 public class SystemUtil {
