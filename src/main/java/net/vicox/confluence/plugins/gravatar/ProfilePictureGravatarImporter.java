@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.annotation.Annotation;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
@@ -60,7 +59,7 @@ public class ProfilePictureGravatarImporter implements GravatarImporter {
     }
 
     protected void addAttachment(User user, byte[] gravatarData, String gravatarFileName) {
-        if (profilePictureCommandIsDeprecated()) {
+        if (SystemUtil.profilePictureCommandIsDeprecated()) {
             Attachment gravatarAttachment = saveOrUpdateUserAttachment(user, gravatarData, gravatarFileName);
             userAccessor.setUserProfilePicture(user, gravatarAttachment);
         } else {
@@ -72,7 +71,7 @@ public class ProfilePictureGravatarImporter implements GravatarImporter {
         PersonalInformation userPersonalInformation = personalInformationManager.getOrCreatePersonalInformation(user);
         attachmentManager.moveAttachment(gravatarAttachment, gravatarFileName, userPersonalInformation);
 
-        if (profilePictureCommandIsDeprecated()) {
+        if (SystemUtil.profilePictureCommandIsDeprecated()) {
             gravatarAttachment = saveOrUpdateUserAttachment(user, gravatarData, gravatarFileName);
             userAccessor.setUserProfilePicture(user, gravatarAttachment);
         } else {
@@ -216,17 +215,5 @@ public class ProfilePictureGravatarImporter implements GravatarImporter {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private static boolean profilePictureCommandIsDeprecated() {
-        boolean isDeprecated = false;
-
-        for (Annotation annotation : SetProfilePictureFromImageCommandImpl.class.getDeclaredAnnotations()) {
-            if (annotation.annotationType().equals(Deprecated.class)) {
-                isDeprecated = true;
-            }
-        }
-
-        return isDeprecated;
     }
 }
