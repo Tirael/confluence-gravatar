@@ -1,4 +1,4 @@
-package net.vicox.confluence.plugins.gravatar;
+package net.vicox.confluence.plugins.gravatar.service;
 
 import com.atlassian.user.User;
 
@@ -10,7 +10,7 @@ import java.util.Date;
  *
  * @author Georg Schmidl
  */
-public interface GravatarImporter {
+public interface GravatarImportService {
 
     void importGravatar(User user) throws IOException;
 

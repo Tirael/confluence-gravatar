@@ -7,6 +7,7 @@ import com.atlassian.core.task.Task;
 import com.atlassian.core.task.TaskQueue;
 import com.atlassian.event.api.EventListener;
 import com.atlassian.event.api.EventPublisher;
+import net.vicox.confluence.plugins.gravatar.service.GravatarImportService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
@@ -22,16 +23,16 @@ public class GravatarImportListener implements DisposableBean {
 
     private final EventPublisher eventPublisher;
     private final MultiQueueTaskManager multiQueueTaskManager;
-    private final GravatarImporter gravatarImporter;
+    private final GravatarImportService gravatarImportService;
     private final UserAccessor userAccessor;
 
     public GravatarImportListener(EventPublisher eventPublisher,
                                   MultiQueueTaskManager multiQueueTaskManager,
-                                  GravatarImporter gravatarImporter,
+                                  GravatarImportService gravatarImportService,
                                   UserAccessor userAccessor) {
         this.eventPublisher = eventPublisher;
         this.multiQueueTaskManager = multiQueueTaskManager;
-        this.gravatarImporter = gravatarImporter;
+        this.gravatarImportService = gravatarImportService;
         this.userAccessor = userAccessor;
         eventPublisher.register(this);
     }
@@ -39,7 +40,7 @@ public class GravatarImportListener implements DisposableBean {
     @EventListener
     public void loginEvent(LoginEvent event) {
         log.debug("adding gravatar import task for user {}", event.getUsername());
-        Task task = new GravatarImportTask(gravatarImporter, userAccessor, event.getUsername());
+        Task task = new GravatarImportTask(gravatarImportService, userAccessor, event.getUsername());
 
         TaskQueue taskQueue = multiQueueTaskManager.getTaskQueue("task");
         taskQueue.addTask(task);

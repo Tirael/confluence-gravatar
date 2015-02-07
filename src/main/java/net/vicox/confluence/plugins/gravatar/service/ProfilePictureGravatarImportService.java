@@ -1,4 +1,4 @@
-package net.vicox.confluence.plugins.gravatar;
+package net.vicox.confluence.plugins.gravatar.service;
 
 import com.atlassian.confluence.core.service.ServiceCommand;
 import com.atlassian.confluence.pages.Attachment;
@@ -10,6 +10,8 @@ import com.atlassian.confluence.user.service.DeleteProfilePictureCommandImpl;
 import com.atlassian.confluence.user.service.SetProfilePictureFromImageCommandImpl;
 import com.atlassian.core.exception.InfrastructureException;
 import com.atlassian.user.User;
+import net.vicox.confluence.plugins.gravatar.GravatarUtil;
+import net.vicox.confluence.plugins.gravatar.SystemUtil;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -27,9 +29,9 @@ import java.util.Date;
  *
  * @author Georg Schmidl
  */
-public class ProfilePictureGravatarImporter implements GravatarImporter {
+public class ProfilePictureGravatarImportService implements GravatarImportService {
 
-    private static final Logger log = LoggerFactory.getLogger(ProfilePictureGravatarImporter.class);
+    private static final Logger log = LoggerFactory.getLogger(ProfilePictureGravatarImportService.class);
 
     private static final String INTERNAL_FILE_NAME_PREFIX = "gravatar-";
 

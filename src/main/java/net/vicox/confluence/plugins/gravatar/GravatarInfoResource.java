@@ -3,6 +3,7 @@ package net.vicox.confluence.plugins.gravatar;
 import com.atlassian.confluence.user.AuthenticatedUserThreadLocal;
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
 import com.atlassian.user.User;
+import net.vicox.confluence.plugins.gravatar.service.GravatarImportService;
 import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +22,7 @@ import javax.ws.rs.core.Response;
 @Path("/info")
 public class GravatarInfoResource {
 
-    private GravatarImporter gravatarImporter;
+    private GravatarImportService gravatarImportService;
 
     @GET
     @AnonymousAllowed
@@ -34,7 +35,7 @@ public class GravatarInfoResource {
             gravatarInfo.setGravatarUrl(GravatarUtil.getGravatarUrlFromEmail(user.getEmail(), request.isSecure()));
         }
 
-        String importedPicturePath = gravatarImporter.getImportedPicturePath(user);
+        String importedPicturePath = gravatarImportService.getImportedPicturePath(user);
         if (importedPicturePath != null) {
             gravatarInfo.setImportedPicturePath(importedPicturePath);
         }
@@ -42,7 +43,7 @@ public class GravatarInfoResource {
         return Response.ok(gravatarInfo).build();
     }
 
-    public void setGravatarImporter(GravatarImporter gravatarImporter) {
-        this.gravatarImporter = gravatarImporter;
+    public void setGravatarImportService(GravatarImportService gravatarImportService) {
+        this.gravatarImportService = gravatarImportService;
     }
 }

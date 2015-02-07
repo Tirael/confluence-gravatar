@@ -29,8 +29,8 @@
         </package>
     </xwork>
 
-    <component key="gravatarImporter" class="net.vicox.confluence.plugins.gravatar.ProfilePictureGravatarImporter">
-        <interface>net.vicox.confluence.plugins.gravatar.GravatarImporter</interface>
+    <component key="gravatarImporter" class="net.vicox.confluence.plugins.gravatar.service.ProfilePictureGravatarImportService">
+        <interface>net.vicox.confluence.plugins.gravatar.service.GravatarImportService</interface>
     </component>
 
     <component key="gravatarImportListener" class="net.vicox.confluence.plugins.gravatar.GravatarImportListener"/>
