@@ -3,7 +3,7 @@ package net.vicox.confluence.plugins.gravatar.rest;
 import com.atlassian.confluence.user.AuthenticatedUserThreadLocal;
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
 import com.atlassian.user.User;
-import net.vicox.confluence.plugins.gravatar.GravatarUtil;
+import net.vicox.confluence.plugins.gravatar.util.GravatarUtil;
 import net.vicox.confluence.plugins.gravatar.service.GravatarImportService;
 import org.apache.commons.lang.StringUtils;
 

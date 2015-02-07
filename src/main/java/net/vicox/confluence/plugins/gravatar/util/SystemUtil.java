@@ -1,4 +1,4 @@
-package net.vicox.confluence.plugins.gravatar;
+package net.vicox.confluence.plugins.gravatar.util;
 
 import com.atlassian.confluence.user.service.SetProfilePictureFromImageCommandImpl;
 
