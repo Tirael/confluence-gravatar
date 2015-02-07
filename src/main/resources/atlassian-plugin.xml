@@ -23,7 +23,7 @@
     <xwork key="gravatarAction">
         <package key="gravatar" extends="default" namespace="/plugins/gravatar">
             <default-interceptor-ref name="defaultStack" />
-            <action name="import" class="net.vicox.confluence.plugins.gravatar.GravatarImportAction">
+            <action name="import" class="net.vicox.confluence.plugins.gravatar.action.GravatarImportAction">
                 <result name="success" type="redirect">/users/editmyprofilepicture.action</result>
             </action>
         </package>

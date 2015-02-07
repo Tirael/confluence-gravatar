@@ -1,4 +1,4 @@
-package net.vicox.confluence.plugins.gravatar;
+package net.vicox.confluence.plugins.gravatar.action;
 
 import com.atlassian.confluence.core.ConfluenceActionSupport;
 import com.atlassian.confluence.user.AuthenticatedUserThreadLocal;
