@@ -15,6 +15,7 @@
         </transformation>
         <resource type="download" name="gravatar.css" location="gravatar.css"/>
         <resource type="download" name="gravatar.js" location="gravatar.js"/>
+        <dependency>com.atlassian.auiplugin:dialog2</dependency>
         <context>atl.userprofile</context>
     </web-resource>
 
