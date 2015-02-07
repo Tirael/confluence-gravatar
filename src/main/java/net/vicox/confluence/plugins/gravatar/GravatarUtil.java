@@ -21,7 +21,7 @@ public class GravatarUtil {
     }
 
     public static String getGravatarUrlFromEmail(String email, boolean secure) {
-        return getGravatarUrlFromMd5(DigestUtils.md5Hex(email), secure);
+        return getGravatarUrlFromMd5(DigestUtils.md5Hex(email.trim().toLowerCase()), secure);
     }
 
     public static byte[] loadGravatarImage(String email) throws IOException {
