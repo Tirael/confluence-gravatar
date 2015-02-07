@@ -37,25 +37,39 @@ public class ProfilePictureGravatarImporter implements GravatarImporter {
 
     @Override
     public void importGravatar(User user) throws IOException {
-        byte[] newGravatar = GravatarUtil.loadGravatarImage(user.getEmail());
-        String newGravatarFileName = getInternalGravatarFileName(newGravatar);
+        byte[] newGravatarData = GravatarUtil.loadGravatarImage(user.getEmail());
+        String newGravatarFileName = getInternalGravatarFileName(newGravatarData);
 
-        Attachment oldGravatarAttachment = getGravatarAttachment(user);
+        Attachment gravatarAttachment = getGravatarAttachment(user);
 
-        if (oldGravatarAttachment == null) {
+        if (gravatarAttachment == null) {
             log.debug("setting gravatar as profile picture for user {}", user.getName());
-            newSetProfilePictureCommand(user, new ByteArrayInputStream(newGravatar), newGravatarFileName).execute();
+            addAttachment(user, newGravatarData, newGravatarFileName);
 
-        } else if (!oldGravatarAttachment.getFileName().equals(newGravatarFileName)) {
+        } else if (!gravatarAttachment.getFileName().equals(newGravatarFileName)) {
             log.debug("updating the gravatar profile picture with new gravatar for user {}", user.getName());
-            PersonalInformation userPersonalInformation = personalInformationManager.getOrCreatePersonalInformation(user);
-            attachmentManager.moveAttachment(oldGravatarAttachment, newGravatarFileName, userPersonalInformation);
-            newSetProfilePictureCommand(user, new ByteArrayInputStream(newGravatar), newGravatarFileName).execute();
+            updateAttachment(user, newGravatarData, newGravatarFileName, gravatarAttachment);
 
         } else {
             log.debug("updating the gravatar profile pictures last modification date for user {}", user.getName());
-            oldGravatarAttachment.setLastModificationDate(new Date());
+            touchAttachment(gravatarAttachment);
         }
+
+        this.userAccessor.setUserProfilePicture(user, gravatarAttachment);
+    }
+
+    protected void addAttachment(User user, byte[] newGravatarData, String newGravatarFileName) {
+        newSetProfilePictureCommand(user, new ByteArrayInputStream(newGravatarData), newGravatarFileName).execute();
+    }
+
+    protected void updateAttachment(User user, byte[] newGravatarData, String newGravatarFileName, Attachment gravatarAttachment) {
+        PersonalInformation userPersonalInformation = personalInformationManager.getOrCreatePersonalInformation(user);
+        attachmentManager.moveAttachment(gravatarAttachment, newGravatarFileName, userPersonalInformation);
+        newSetProfilePictureCommand(user, new ByteArrayInputStream(newGravatarData), newGravatarFileName).execute();
+    }
+
+    protected void touchAttachment(Attachment oldGravatarAttachment) {
+        oldGravatarAttachment.setLastModificationDate(new Date());
     }
 
     protected ServiceCommand newSetProfilePictureCommand(User user, InputStream imageData, String imageFileName) {
@@ -139,15 +153,15 @@ public class ProfilePictureGravatarImporter implements GravatarImporter {
         this.userAccessor = userAccessor;
     }
 
-    private static String getInternalGravatarFileName(byte[] image) {
+    protected static String getInternalGravatarFileName(byte[] image) {
         return INTERNAL_FILE_NAME_PREFIX + generateImageHash(image) + ".png";
     }
 
-    private static boolean isInternalGravatarFileName(String fileName) {
+    protected static boolean isInternalGravatarFileName(String fileName) {
         return fileName.startsWith(INTERNAL_FILE_NAME_PREFIX);
     }
 
-    private static String generateImageHash(byte[] image) {
+    protected static String generateImageHash(byte[] image) {
         try {
             MessageDigest messageDigest = MessageDigest.getInstance("MD5");
             byte[] hash = messageDigest.digest(image);
