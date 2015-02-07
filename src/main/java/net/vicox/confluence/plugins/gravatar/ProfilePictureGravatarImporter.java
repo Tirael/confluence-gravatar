@@ -8,14 +8,17 @@ import com.atlassian.confluence.user.PersonalInformationManager;
 import com.atlassian.confluence.user.UserAccessor;
 import com.atlassian.confluence.user.service.DeleteProfilePictureCommandImpl;
 import com.atlassian.confluence.user.service.SetProfilePictureFromImageCommandImpl;
+import com.atlassian.core.exception.InfrastructureException;
 import com.atlassian.user.User;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.annotation.Annotation;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
@@ -37,39 +40,49 @@ public class ProfilePictureGravatarImporter implements GravatarImporter {
 
     @Override
     public void importGravatar(User user) throws IOException {
-        byte[] newGravatarData = GravatarUtil.loadGravatarImage(user.getEmail());
-        String newGravatarFileName = getInternalGravatarFileName(newGravatarData);
+        byte[] gravatarData = GravatarUtil.loadGravatarImage(user.getEmail());
+        String gravatarFileName = getInternalGravatarFileName(gravatarData);
 
         Attachment gravatarAttachment = getGravatarAttachment(user);
 
         if (gravatarAttachment == null) {
             log.debug("setting gravatar as profile picture for user {}", user.getName());
-            addAttachment(user, newGravatarData, newGravatarFileName);
+            addAttachment(user, gravatarData, gravatarFileName);
 
-        } else if (!gravatarAttachment.getFileName().equals(newGravatarFileName)) {
+        } else if (!gravatarAttachment.getFileName().equals(gravatarFileName)) {
             log.debug("updating the gravatar profile picture with new gravatar for user {}", user.getName());
-            updateAttachment(user, newGravatarData, newGravatarFileName, gravatarAttachment);
+            updateAttachment(user, gravatarData, gravatarFileName, gravatarAttachment);
 
         } else {
             log.debug("updating the gravatar profile pictures last modification date for user {}", user.getName());
-            touchAttachment(gravatarAttachment);
+            touchAttachment(user, gravatarAttachment);
         }
-
-        this.userAccessor.setUserProfilePicture(user, gravatarAttachment);
     }
 
-    protected void addAttachment(User user, byte[] newGravatarData, String newGravatarFileName) {
-        newSetProfilePictureCommand(user, new ByteArrayInputStream(newGravatarData), newGravatarFileName).execute();
+    protected void addAttachment(User user, byte[] gravatarData, String gravatarFileName) {
+        if (profilePictureCommandIsDeprecated()) {
+            Attachment gravatarAttachment = saveOrUpdateUserAttachment(user, gravatarData, gravatarFileName);
+            userAccessor.setUserProfilePicture(user, gravatarAttachment);
+        } else {
+            newSetProfilePictureCommand(user, new ByteArrayInputStream(gravatarData), gravatarFileName).execute();
+        }
     }
 
-    protected void updateAttachment(User user, byte[] newGravatarData, String newGravatarFileName, Attachment gravatarAttachment) {
+    protected void updateAttachment(User user, byte[] gravatarData, String gravatarFileName, Attachment gravatarAttachment) {
         PersonalInformation userPersonalInformation = personalInformationManager.getOrCreatePersonalInformation(user);
-        attachmentManager.moveAttachment(gravatarAttachment, newGravatarFileName, userPersonalInformation);
-        newSetProfilePictureCommand(user, new ByteArrayInputStream(newGravatarData), newGravatarFileName).execute();
+        attachmentManager.moveAttachment(gravatarAttachment, gravatarFileName, userPersonalInformation);
+
+        if (profilePictureCommandIsDeprecated()) {
+            gravatarAttachment = saveOrUpdateUserAttachment(user, gravatarData, gravatarFileName);
+            userAccessor.setUserProfilePicture(user, gravatarAttachment);
+        } else {
+            newSetProfilePictureCommand(user, new ByteArrayInputStream(gravatarData), gravatarFileName).execute();
+        }
     }
 
-    protected void touchAttachment(Attachment oldGravatarAttachment) {
-        oldGravatarAttachment.setLastModificationDate(new Date());
+    protected void touchAttachment(User user, Attachment gravatarAttachment) {
+        gravatarAttachment.setLastModificationDate(new Date());
+        userAccessor.setUserProfilePicture(user, gravatarAttachment);
     }
 
     protected ServiceCommand newSetProfilePictureCommand(User user, InputStream imageData, String imageFileName) {
@@ -85,6 +98,40 @@ public class ProfilePictureGravatarImporter implements GravatarImporter {
                 return true;
             }
         };
+    }
+
+    protected Attachment saveOrUpdateUserAttachment(User user, byte[] imageData, String imageFileName) {
+        PersonalInformation userPersonalInformation = this.personalInformationManager.getOrCreatePersonalInformation(user);
+        Attachment attachment = this.attachmentManager.getAttachment(userPersonalInformation, imageFileName);
+
+        Attachment previousVersion = null;
+
+        if (attachment == null) {
+            attachment = new Attachment();
+        } else {
+            try {
+                previousVersion = (Attachment) attachment.clone();
+            } catch (CloneNotSupportedException e) {
+                throw new InfrastructureException(e);
+            }
+        }
+
+        attachment.setContentType("image/png");
+        attachment.setFileName(imageFileName);
+        attachment.setComment("Imported Gravatar Picture");
+        attachment.setFileSize(imageData.length);
+        userPersonalInformation.addAttachment(attachment);
+
+        InputStream is = new ByteArrayInputStream(imageData);
+        try {
+            this.attachmentManager.saveAttachment(attachment, previousVersion, is);
+        } catch (IOException e) {
+            throw new InfrastructureException("Error saving attachment data: " + e.getMessage(), e);
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+
+        return attachment;
     }
 
     @Override
@@ -169,5 +216,17 @@ public class ProfilePictureGravatarImporter implements GravatarImporter {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static boolean profilePictureCommandIsDeprecated() {
+        boolean isDeprecated = false;
+
+        for (Annotation annotation : SetProfilePictureFromImageCommandImpl.class.getDeclaredAnnotations()) {
+            if (annotation.annotationType().equals(Deprecated.class)) {
+                isDeprecated = true;
+            }
+        }
+
+        return isDeprecated;
     }
 }
