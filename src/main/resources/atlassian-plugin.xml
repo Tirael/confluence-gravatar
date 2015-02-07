@@ -33,5 +33,5 @@
         <interface>net.vicox.confluence.plugins.gravatar.service.GravatarImportService</interface>
     </component>
 
-    <component key="gravatarImportListener" class="net.vicox.confluence.plugins.gravatar.GravatarImportListener"/>
+    <component key="gravatarImportListener" class="net.vicox.confluence.plugins.gravatar.listener.GravatarImportListener"/>
 </atlassian-plugin>
