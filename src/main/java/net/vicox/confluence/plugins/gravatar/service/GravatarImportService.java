@@ -28,6 +28,14 @@ public interface GravatarImportService {
     void removeGravatar(User user);
 
     /**
+     * Returns true if the given user uses Gravatar.
+     *
+     * @param user the user
+     * @return true if the user uses Gravatar, false otherwise
+     */
+    boolean usesGravatar(User user);
+
+    /**
      * Returns the imported pictures URL for a given user.
      *
      * @param user the user

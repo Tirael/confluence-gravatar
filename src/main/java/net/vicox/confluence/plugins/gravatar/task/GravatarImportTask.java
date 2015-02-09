@@ -31,14 +31,25 @@ public class GravatarImportTask implements Task {
 
     @Override
     public void execute() throws Exception {
-        log.debug("attempting to update gravatar for user {}", username);
+        log.debug("attempting to update gravatar for user '{}'", username);
 
         User user = userAccessor.getUserByName(username);
         if (user != null) {
-            Date lastUpdated = gravatarImportService.getLastImportedDate(user);
+            if (gravatarImportService.usesGravatar(user)) {
+                log.debug("user '{}' is using gravatar", username);
 
-            if (lastUpdated != null && new Date().getTime() - (24 * 60 * 60 * 1000) > lastUpdated.getTime()) {
-                gravatarImportService.importGravatar(user);
+                Date lastUpdated = gravatarImportService.getLastImportedDate(user);
+
+                if (lastUpdated != null && new Date().getTime() - (24 * 60 * 60 * 1000) > lastUpdated.getTime()) {
+                    log.debug("importing gravatar last updated '{}' for user '{}'", lastUpdated, username);
+
+                    gravatarImportService.importGravatar(user);
+
+                } else {
+                    log.debug("skipping import of gravatar last updated '{}' for user '{}'", lastUpdated, username);
+                }
+            } else {
+                log.debug("user '{}' is not using gravatar", username);
             }
         }
     }

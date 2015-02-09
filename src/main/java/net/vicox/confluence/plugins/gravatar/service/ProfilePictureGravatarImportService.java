@@ -6,6 +6,7 @@ import com.atlassian.confluence.pages.AttachmentManager;
 import com.atlassian.confluence.user.PersonalInformation;
 import com.atlassian.confluence.user.PersonalInformationManager;
 import com.atlassian.confluence.user.UserAccessor;
+import com.atlassian.confluence.user.actions.ProfilePictureInfo;
 import com.atlassian.confluence.user.service.DeleteProfilePictureCommandImpl;
 import com.atlassian.confluence.user.service.SetProfilePictureFromImageCommandImpl;
 import com.atlassian.core.exception.InfrastructureException;
@@ -150,6 +151,23 @@ public class ProfilePictureGravatarImportService implements GravatarImportServic
                 newDeleteProfilePictureCommand(user, gravatarAttachment.getFileName()).execute();
             }
         }
+    }
+
+    @Override
+    public boolean usesGravatar(User user) {
+        boolean usesGravatar = false;
+
+        ProfilePictureInfo profilePictureInfo = userAccessor.getUserProfilePicture(user);
+
+        if (profilePictureInfo != null) {
+            String filename = profilePictureInfo.getFileName();
+
+            if (filename != null && isInternalGravatarFileName(filename)) {
+                usesGravatar = true;
+            }
+        }
+
+        return usesGravatar;
     }
 
     protected ServiceCommand newDeleteProfilePictureCommand(User user, String imageFileName){
