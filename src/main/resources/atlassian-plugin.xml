@@ -35,4 +35,8 @@
     </component>
 
     <component key="gravatarImportListener" class="net.vicox.confluence.plugins.gravatar.listener.GravatarImportListener"/>
+
+    <component-import key="transactionTemplate">
+        <interface>com.atlassian.sal.api.transaction.TransactionTemplate</interface>
+    </component-import>
 </atlassian-plugin>
