@@ -41,7 +41,7 @@ public class ProfilePictureGravatarImportService implements GravatarImportServic
 
     @Override
     public void importGravatar(User user) throws IOException {
-        String gravatarServerUrl  = gravatarSettingsService.getGravatarServerUrl();
+        String gravatarServerUrl  = gravatarSettingsService.getSettings().get("gravatarServerUrl");
         byte[] gravatarData = GravatarUtil.loadGravatarImage(gravatarServerUrl, user.getEmail());
         String gravatarFileName = getInternalGravatarFileName(gravatarData);
 

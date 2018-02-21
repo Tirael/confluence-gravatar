@@ -19,6 +19,14 @@
         <context>atl.userprofile</context>
     </web-resource>
 
+    <web-resource key="gravatarSettingsResource">
+        <transformation extension="js">
+            <transformer key="jsI18n"/>
+        </transformation>
+        <resource type="download" name="settings.js" location="gravatar/js/settings.js"/>
+        <context>gravatar-settings</context>
+    </web-resource>
+
     <rest key="gravatarRest" path="/gravatar" version="1.0" />
 
     <component key="gravatarImportService" class="net.vicox.confluence.plugins.gravatar.service.impl.ProfilePictureGravatarImportService">
@@ -34,4 +42,20 @@
     <component-import key="transactionTemplate">
         <interface>com.atlassian.sal.api.transaction.TransactionTemplate</interface>
     </component-import>
+
+    <web-item key="gravatarSettingsItem" section="system.admin/configuration" weight="200">
+        <label key="gravatar.settings" />
+        <link>/admin/plugins/gravatar/settings.action</link>
+    </web-item>
+
+    <xwork key="gravatarActions" name="Actions">
+        <package name="gravatarAdminActions" extends="default" namespace="/admin/plugins/gravatar">
+            <default-interceptor-ref name="defaultStack"/>
+
+            <action name="settings" class="com.atlassian.confluence.core.ConfluenceActionSupport">
+                <result name="success" type="velocity">/gravatar/templates/settings.vm</result>
+            </action>
+        </package>
+    </xwork>
+
 </atlassian-plugin>

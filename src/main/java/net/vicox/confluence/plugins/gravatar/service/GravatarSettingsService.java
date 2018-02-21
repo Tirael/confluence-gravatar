@@ -1,8 +1,10 @@
 package net.vicox.confluence.plugins.gravatar.service;
 
+import java.util.Map;
+
 public interface GravatarSettingsService {
 
-    String getGravatarServerUrl();
+    Map<String, String> getSettings();
 
-    void setGravatarServerUrl(String gravatarServerUrl);
+    void setSettings(Map<String, String> newSettings);
 }

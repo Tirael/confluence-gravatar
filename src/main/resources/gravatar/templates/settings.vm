@@ -1,0 +1,42 @@
+<html>
+<head>
+    <title>$action.getText("gravatar.settings")</title>
+    <meta name="decorator" content="atl.admin"/>
+    <content tag="selectedWebItem">gravatarSettingsItem</content>
+</head>
+<body>
+
+#requireResourcesForContext("gravatar-settings")
+
+<div class="gravatar-settings"
+     data-url="$req.contextPath/rest/gravatar/latest/settings">
+
+    <div class="spinner" style="text-align: center; padding: 10px;">
+        <span class="aui-icon aui-icon-wait">Loading...</span>
+    </div>
+
+    <form class="aui" style="display: none;">
+
+        <div class="field-group">
+            <label for="gravatarServerUrl">$i18n.getText("gravatar.settings.gravatarServerUrl")</label>
+            <input class="text long-field" type="text" name="gravatarServerUrl" id="gravatarServerUrl">
+            <div class="description">$i18n.getText("gravatar.settings.gravatarServerUrl.desc")</div>
+        </div>
+
+        <div class="buttons-container">
+            <div class="buttons">
+                <input class="aui-button submit" type="submit" value="$i18n.getText("gravatar.settings.save")">
+                <span class="spinner" style="text-align: center; padding: 10px; display: none;">
+            <span class="aui-icon aui-icon-wait">Loading...</span>
+          </span>
+                <span class="success" style="text-align: center; padding: 10px; display: none;">
+            <span class="aui-icon aui-icon-success">Success!</span>
+          </span>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+</body>
+</html>

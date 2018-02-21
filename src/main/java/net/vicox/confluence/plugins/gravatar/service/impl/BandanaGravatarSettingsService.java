@@ -15,8 +15,12 @@ public class BandanaGravatarSettingsService implements GravatarSettingsService {
     private static final String BANDANA_KEY = "gravatar.settings";
     private static final BandanaContext BANDANA_CONTEXT = ConfluenceBandanaContext.GLOBAL_CONTEXT;
 
-    private static final String GRAVATAR_SERVER_URL_KEY = "gravatarServerUrl";
-    private static final String GRAVATAR_SERVER_URL_DEFAULT_VALUE = "https://www.gravatar.com/avatar/";
+    private static Map<String, String> DEFAULT_SETTINGS;
+
+    static {
+        DEFAULT_SETTINGS = new LinkedHashMap<>();
+        DEFAULT_SETTINGS.put("gravatarServerUrl", "https://www.gravatar.com/avatar/");
+    }
 
     private BandanaManager bandanaManager;
     private XStream xStream;
@@ -27,33 +31,28 @@ public class BandanaGravatarSettingsService implements GravatarSettingsService {
     }
 
     @Override
-    public String getGravatarServerUrl() {
-        return getSetting(GRAVATAR_SERVER_URL_KEY, GRAVATAR_SERVER_URL_DEFAULT_VALUE);
+    public Map<String, String> getSettings() {
+        Map<String, String> settings = loadSettings();
+        DEFAULT_SETTINGS.forEach(settings::putIfAbsent);
+        return settings;
     }
 
     @Override
-    public void setGravatarServerUrl(String gravatarServerUrl) {
-        setSetting(GRAVATAR_SERVER_URL_KEY, GRAVATAR_SERVER_URL_DEFAULT_VALUE, gravatarServerUrl);
-    }
-
-    private String getSetting(String key, String defaultValue) {
-        Map<String, String> settings = loadSettings();
-        return settings.get(key) == null ? defaultValue : settings.get(key);
-    }
-
-    private void setSetting(String key, String defaultValue, String value) {
-        Map<String, String> settings = loadSettings();
-        if (defaultValue.equals(value)) {
-            settings.remove(key);
-        } else {
-            settings.put(key, value);
-        }
+    public void setSettings(Map<String, String> settings) {
+        settings.entrySet().removeIf(entry ->
+                DEFAULT_SETTINGS.get(entry.getKey()) != null
+                        && DEFAULT_SETTINGS.get(entry.getKey()).equals(entry.getValue()));
         storeSettings(settings);
     }
 
     private Map<String, String> loadSettings() {
+        Map<String, String> settings = new LinkedHashMap<>();
+
         String settingsXml = (String) bandanaManager.getValue(BANDANA_CONTEXT, BANDANA_KEY);
-        return StringUtils.isBlank(settingsXml) ? new LinkedHashMap<>() : (Map<String, String>) xStream.fromXML(settingsXml);
+        if (StringUtils.isNotBlank(settingsXml)) {
+            settings.putAll((Map<String, String>) xStream.fromXML(settingsXml));
+        }
+        return settings;
     }
 
     private void storeSettings(Map<String, String> settings) {
