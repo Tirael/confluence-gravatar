@@ -1,18 +1,14 @@
 package net.vicox.confluence.plugins.gravatar.service;
 
-import com.atlassian.confluence.core.service.ServiceCommand;
 import com.atlassian.confluence.pages.Attachment;
 import com.atlassian.confluence.pages.AttachmentManager;
 import com.atlassian.confluence.user.PersonalInformation;
 import com.atlassian.confluence.user.PersonalInformationManager;
 import com.atlassian.confluence.user.UserAccessor;
 import com.atlassian.confluence.user.actions.ProfilePictureInfo;
-import com.atlassian.confluence.user.service.DeleteProfilePictureCommandImpl;
-import com.atlassian.confluence.user.service.SetProfilePictureFromImageCommandImpl;
 import com.atlassian.core.exception.InfrastructureException;
 import com.atlassian.user.User;
 import net.vicox.confluence.plugins.gravatar.util.GravatarUtil;
-import net.vicox.confluence.plugins.gravatar.util.SystemUtil;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -62,46 +58,20 @@ public class ProfilePictureGravatarImportService implements GravatarImportServic
     }
 
     protected void addAttachment(User user, byte[] gravatarData, String gravatarFileName) {
-        if (SystemUtil.profilePictureCommandIsDeprecated()) {
-            Attachment gravatarAttachment = saveOrUpdateUserAttachment(user, gravatarData, gravatarFileName);
-            userAccessor.setUserProfilePicture(user, gravatarAttachment);
-
-        } else { // Confluence < 5.7
-            newSetProfilePictureCommand(user, new ByteArrayInputStream(gravatarData), gravatarFileName).execute();
-        }
+        Attachment gravatarAttachment = saveOrUpdateUserAttachment(user, gravatarData, gravatarFileName);
+        userAccessor.setUserProfilePicture(user, gravatarAttachment);
     }
 
     protected void updateAttachment(User user, byte[] gravatarData, String gravatarFileName, Attachment gravatarAttachment) {
         PersonalInformation userPersonalInformation = personalInformationManager.getOrCreatePersonalInformation(user);
         attachmentManager.moveAttachment(gravatarAttachment, gravatarFileName, userPersonalInformation);
-
-        if (SystemUtil.profilePictureCommandIsDeprecated()) {
-            gravatarAttachment = saveOrUpdateUserAttachment(user, gravatarData, gravatarFileName);
-            userAccessor.setUserProfilePicture(user, gravatarAttachment);
-
-        } else { // Confluence < 5.7
-            newSetProfilePictureCommand(user, new ByteArrayInputStream(gravatarData), gravatarFileName).execute();
-        }
+        gravatarAttachment = saveOrUpdateUserAttachment(user, gravatarData, gravatarFileName);
+        userAccessor.setUserProfilePicture(user, gravatarAttachment);
     }
 
     protected void touchAttachment(User user, Attachment gravatarAttachment) {
         gravatarAttachment.setLastModificationDate(new Date());
         userAccessor.setUserProfilePicture(user, gravatarAttachment);
-    }
-
-    protected ServiceCommand newSetProfilePictureCommand(User user, InputStream imageData, String imageFileName) {
-        return new SetProfilePictureFromImageCommandImpl(null,
-                personalInformationManager,
-                userAccessor,
-                attachmentManager,
-                user,
-                imageData,
-                imageFileName) {
-            @Override
-            protected boolean isAuthorizedInternal() {
-                return true;
-            }
-        };
     }
 
     protected Attachment saveOrUpdateUserAttachment(User user, byte[] imageData, String imageFileName) {
@@ -140,17 +110,8 @@ public class ProfilePictureGravatarImportService implements GravatarImportServic
 
     @Override
     public void removeGravatar(User user) {
-        if (SystemUtil.profilePictureCommandIsDeprecated()) {
-            // should be implemented when Confluence gets a delete avatar function
-            throw new UnsupportedOperationException();
-
-        } else { // Confluence < 5.7
-            log.debug("removing gravatar profile picture for user {}", user.getName());
-            Attachment gravatarAttachment = getGravatarAttachment(user);
-            if (gravatarAttachment != null) {
-                newDeleteProfilePictureCommand(user, gravatarAttachment.getFileName()).execute();
-            }
-        }
+        // should be implemented when Confluence gets a delete avatar function
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -168,20 +129,6 @@ public class ProfilePictureGravatarImportService implements GravatarImportServic
         }
 
         return usesGravatar;
-    }
-
-    protected ServiceCommand newDeleteProfilePictureCommand(User user, String imageFileName){
-        return new DeleteProfilePictureCommandImpl(null,
-                personalInformationManager,
-                userAccessor,
-                attachmentManager,
-                user,
-                imageFileName) {
-            @Override
-            protected boolean isAuthorizedInternal() {
-                return true;
-            }
-        };
     }
 
     @Override

@@ -21,15 +21,6 @@
 
     <rest key="gravatarRest" path="/gravatar" version="1.0" />
 
-    <xwork key="gravatarAction">
-        <package key="gravatar" extends="default" namespace="/plugins/gravatar">
-            <default-interceptor-ref name="defaultStack" />
-            <action name="import" class="net.vicox.confluence.plugins.gravatar.action.GravatarImportAction">
-                <result name="success" type="redirect">/users/editmyprofilepicture.action</result>
-            </action>
-        </package>
-    </xwork>
-
     <component key="gravatarImporter" class="net.vicox.confluence.plugins.gravatar.service.ProfilePictureGravatarImportService">
         <interface>net.vicox.confluence.plugins.gravatar.service.GravatarImportService</interface>
     </component>

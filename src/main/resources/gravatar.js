@@ -86,23 +86,9 @@
                             alert(AJS.I18n.getText('gravatar.uploader.error'));
                         })
                     });
-
-                } else { // Confluence < 5.7
-                    var formTemplate = info.importedPicturePath ? formUpdateTemplate : formImportTemplate;
-
-                    $('.edit-my-picture-profile').append(AJS.format(formTemplate,
-                        /* 0 */ AJS.contextPath() + '/plugins/gravatar/import.action',
-                        /* 1 */ info.gravatarUrl,
-                        /* 2 */ AJS.contextPath() + info.importedPicturePath,
-                        /* 3 */ AJS.I18n.getText('gravatar.header'),
-                        /* 4 */ AJS.I18n.getText('gravatar.import.button'),
-                        /* 5 */ AJS.I18n.getText('gravatar.delete.button'),
-                        /* 6 */ AJS.I18n.getText('gravatar.update.button')
-                    ));
                 }
             });
         }
-
     });
 
 })(AJS.$);

@@ -14,7 +14,7 @@ import java.net.URL;
  */
 public class GravatarUtil {
 
-    public static final int IMAGE_SIZE = SystemUtil.profilePictureCommandIsDeprecated() ? 256 : 48;
+    public static final int IMAGE_SIZE = 256;
 
     public static String getGravatarUrlFromMd5(String md5) {
         return "https://www.gravatar.com/avatar/" + md5 + ".png?s=" + IMAGE_SIZE;
