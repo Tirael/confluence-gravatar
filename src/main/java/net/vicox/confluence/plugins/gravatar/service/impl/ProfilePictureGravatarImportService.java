@@ -1,4 +1,4 @@
-package net.vicox.confluence.plugins.gravatar.service;
+package net.vicox.confluence.plugins.gravatar.service.impl;
 
 import com.atlassian.confluence.pages.Attachment;
 import com.atlassian.confluence.pages.AttachmentManager;
@@ -8,6 +8,8 @@ import com.atlassian.confluence.user.UserAccessor;
 import com.atlassian.confluence.user.actions.ProfilePictureInfo;
 import com.atlassian.core.exception.InfrastructureException;
 import com.atlassian.user.User;
+import net.vicox.confluence.plugins.gravatar.service.GravatarImportService;
+import net.vicox.confluence.plugins.gravatar.service.GravatarSettingsService;
 import net.vicox.confluence.plugins.gravatar.util.GravatarUtil;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.IOUtils;
@@ -32,13 +34,15 @@ public class ProfilePictureGravatarImportService implements GravatarImportServic
 
     private static final String INTERNAL_FILE_NAME_PREFIX = "gravatar-";
 
-    protected PersonalInformationManager personalInformationManager;
-    protected AttachmentManager attachmentManager;
-    protected UserAccessor userAccessor;
+    private PersonalInformationManager personalInformationManager;
+    private AttachmentManager attachmentManager;
+    private UserAccessor userAccessor;
+    private GravatarSettingsService gravatarSettingsService;
 
     @Override
     public void importGravatar(User user) throws IOException {
-        byte[] gravatarData = GravatarUtil.loadGravatarImage(user.getEmail());
+        String gravatarServerUrl  = gravatarSettingsService.getGravatarServerUrl();
+        byte[] gravatarData = GravatarUtil.loadGravatarImage(gravatarServerUrl, user.getEmail());
         String gravatarFileName = getInternalGravatarFileName(gravatarData);
 
         Attachment gravatarAttachment = getGravatarAttachment(user);
@@ -57,24 +61,24 @@ public class ProfilePictureGravatarImportService implements GravatarImportServic
         }
     }
 
-    protected void addAttachment(User user, byte[] gravatarData, String gravatarFileName) {
+    private void addAttachment(User user, byte[] gravatarData, String gravatarFileName) {
         Attachment gravatarAttachment = saveOrUpdateUserAttachment(user, gravatarData, gravatarFileName);
         userAccessor.setUserProfilePicture(user, gravatarAttachment);
     }
 
-    protected void updateAttachment(User user, byte[] gravatarData, String gravatarFileName, Attachment gravatarAttachment) {
+    private void updateAttachment(User user, byte[] gravatarData, String gravatarFileName, Attachment gravatarAttachment) {
         PersonalInformation userPersonalInformation = personalInformationManager.getOrCreatePersonalInformation(user);
         attachmentManager.moveAttachment(gravatarAttachment, gravatarFileName, userPersonalInformation);
         gravatarAttachment = saveOrUpdateUserAttachment(user, gravatarData, gravatarFileName);
         userAccessor.setUserProfilePicture(user, gravatarAttachment);
     }
 
-    protected void touchAttachment(User user, Attachment gravatarAttachment) {
+    private void touchAttachment(User user, Attachment gravatarAttachment) {
         gravatarAttachment.setLastModificationDate(new Date());
         userAccessor.setUserProfilePicture(user, gravatarAttachment);
     }
 
-    protected Attachment saveOrUpdateUserAttachment(User user, byte[] imageData, String imageFileName) {
+    private Attachment saveOrUpdateUserAttachment(User user, byte[] imageData, String imageFileName) {
         PersonalInformation userPersonalInformation = this.personalInformationManager.getOrCreatePersonalInformation(user);
         Attachment attachment = this.attachmentManager.getAttachment(userPersonalInformation, imageFileName);
 
@@ -149,7 +153,7 @@ public class ProfilePictureGravatarImportService implements GravatarImportServic
         return null;
     }
 
-    protected Attachment getGravatarAttachment(User user) {
+    private Attachment getGravatarAttachment(User user) {
         if (personalInformationManager.hasPersonalInformation(user.getName())) {
             PersonalInformation userPersonalInformation = personalInformationManager.getOrCreatePersonalInformation(user);
 
@@ -174,15 +178,19 @@ public class ProfilePictureGravatarImportService implements GravatarImportServic
         this.userAccessor = userAccessor;
     }
 
-    protected static String getInternalGravatarFileName(byte[] image) {
+    public void setGravatarSettingsService(GravatarSettingsService gravatarSettingsService) {
+        this.gravatarSettingsService = gravatarSettingsService;
+    }
+
+    private static String getInternalGravatarFileName(byte[] image) {
         return INTERNAL_FILE_NAME_PREFIX + generateImageHash(image) + ".png";
     }
 
-    protected static boolean isInternalGravatarFileName(String fileName) {
+    private static boolean isInternalGravatarFileName(String fileName) {
         return fileName.startsWith(INTERNAL_FILE_NAME_PREFIX);
     }
 
-    protected static String generateImageHash(byte[] image) {
+    private static String generateImageHash(byte[] image) {
         try {
             MessageDigest messageDigest = MessageDigest.getInstance("MD5");
             byte[] hash = messageDigest.digest(image);

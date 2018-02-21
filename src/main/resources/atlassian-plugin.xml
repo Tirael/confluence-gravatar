@@ -21,8 +21,12 @@
 
     <rest key="gravatarRest" path="/gravatar" version="1.0" />
 
-    <component key="gravatarImporter" class="net.vicox.confluence.plugins.gravatar.service.ProfilePictureGravatarImportService">
+    <component key="gravatarImportService" class="net.vicox.confluence.plugins.gravatar.service.impl.ProfilePictureGravatarImportService">
         <interface>net.vicox.confluence.plugins.gravatar.service.GravatarImportService</interface>
+    </component>
+
+    <component key="gravatarSettingsService" class="net.vicox.confluence.plugins.gravatar.service.impl.BandanaGravatarSettingsService">
+        <interface>net.vicox.confluence.plugins.gravatar.service.GravatarSettingsService</interface>
     </component>
 
     <component key="gravatarImportListener" class="net.vicox.confluence.plugins.gravatar.listener.GravatarImportListener"/>

@@ -4,6 +4,7 @@ import com.atlassian.confluence.user.AuthenticatedUserThreadLocal;
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
 import com.atlassian.user.User;
 import net.vicox.confluence.plugins.gravatar.service.GravatarImportService;
+import net.vicox.confluence.plugins.gravatar.service.GravatarSettingsService;
 import net.vicox.confluence.plugins.gravatar.util.GravatarUtil;
 import org.apache.commons.lang.StringUtils;
 
@@ -25,6 +26,7 @@ import java.io.IOException;
 public class GravatarResource {
 
     private GravatarImportService gravatarImportService;
+    private GravatarSettingsService gravatarSettingsService;
 
     /**
      * Returns the user's Gravatar URL and the imported profile picture URL.
@@ -40,8 +42,10 @@ public class GravatarResource {
         GravatarInfo gravatarInfo = new GravatarInfo();
 
         User user = AuthenticatedUserThreadLocal.get();
-        if (user.getEmail() != null && !StringUtils.isBlank(user.getEmail())) {
-            gravatarInfo.setGravatarUrl(GravatarUtil.getGravatarUrlFromEmail(user.getEmail()));
+        if (StringUtils.isNotBlank(user.getEmail())) {
+            String gravatarServerUrl = gravatarSettingsService.getGravatarServerUrl();
+            String gravatarUrl = GravatarUtil.getGravatarUrlFromEmail(gravatarServerUrl, user.getEmail());
+            gravatarInfo.setGravatarUrl(gravatarUrl);
         }
 
         String importedPicturePath = gravatarImportService.getImportedPicturePath(user);
@@ -74,5 +78,9 @@ public class GravatarResource {
 
     public void setGravatarImportService(GravatarImportService gravatarImportService) {
         this.gravatarImportService = gravatarImportService;
+    }
+
+    public void setGravatarSettingsService(GravatarSettingsService gravatarSettingsService) {
+        this.gravatarSettingsService = gravatarSettingsService;
     }
 }
