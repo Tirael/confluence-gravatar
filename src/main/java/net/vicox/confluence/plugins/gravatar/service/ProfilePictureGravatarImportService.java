@@ -115,7 +115,7 @@ public class ProfilePictureGravatarImportService implements GravatarImportServic
         } else {
             try {
                 previousVersion = (Attachment) attachment.clone();
-            } catch (CloneNotSupportedException e) {
+            } catch (Exception e) {
                 throw new InfrastructureException(e);
             }
         }
