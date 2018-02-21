@@ -41,7 +41,7 @@ public class GravatarResource {
 
         User user = AuthenticatedUserThreadLocal.get();
         if (user.getEmail() != null && !StringUtils.isBlank(user.getEmail())) {
-            gravatarInfo.setGravatarUrl(GravatarUtil.getGravatarUrlFromEmail(user.getEmail(), request.isSecure()));
+            gravatarInfo.setGravatarUrl(GravatarUtil.getGravatarUrlFromEmail(user.getEmail()));
         }
 
         String importedPicturePath = gravatarImportService.getImportedPicturePath(user);

@@ -16,16 +16,16 @@ public class GravatarUtil {
 
     public static final int IMAGE_SIZE = SystemUtil.profilePictureCommandIsDeprecated() ? 256 : 48;
 
-    public static String getGravatarUrlFromMd5(String md5, boolean secure) {
-        return (secure ? "https://secure" : "http://www") + ".gravatar.com/avatar/" + md5 + ".png?s=" + IMAGE_SIZE;
+    public static String getGravatarUrlFromMd5(String md5) {
+        return "https://www.gravatar.com/avatar/" + md5 + ".png?s=" + IMAGE_SIZE;
     }
 
-    public static String getGravatarUrlFromEmail(String email, boolean secure) {
-        return getGravatarUrlFromMd5(DigestUtils.md5Hex(email.trim().toLowerCase()), secure);
+    public static String getGravatarUrlFromEmail(String email) {
+        return getGravatarUrlFromMd5(DigestUtils.md5Hex(email.trim().toLowerCase()));
     }
 
     public static byte[] loadGravatarImage(String email) throws IOException {
-        InputStream is = new URL(GravatarUtil.getGravatarUrlFromEmail(email, false)).openStream();
+        InputStream is = new URL(GravatarUtil.getGravatarUrlFromEmail(email)).openStream();
         return IOUtils.toByteArray(is);
     }
 }
