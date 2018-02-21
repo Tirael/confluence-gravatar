@@ -98,9 +98,9 @@
     </distributionManagement>
 
     <properties>
-        <confluence.version>5.7</confluence.version>
-        <confluence.data.version>5.7</confluence.data.version>
-        <amps.version>5.0.13</amps.version>
+        <confluence.version>6.7.1</confluence.version>
+        <confluence.data.version>6.7.1</confluence.data.version>
+        <amps.version>6.3.6</amps.version>
     </properties>
 
 </project>
