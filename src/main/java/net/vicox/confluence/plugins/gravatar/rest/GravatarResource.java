@@ -1,6 +1,9 @@
 package net.vicox.confluence.plugins.gravatar.rest;
 
+import com.atlassian.confluence.security.Permission;
+import com.atlassian.confluence.security.PermissionManager;
 import com.atlassian.confluence.user.AuthenticatedUserThreadLocal;
+import com.atlassian.confluence.user.ConfluenceUser;
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
 import com.atlassian.user.User;
 import net.vicox.confluence.plugins.gravatar.service.GravatarImportService;
@@ -29,6 +32,7 @@ public class GravatarResource {
 
     private GravatarImportService gravatarImportService;
     private GravatarSettingsService gravatarSettingsService;
+    private PermissionManager permissionManager;
 
     /**
      * Returns the user's Gravatar URL and the imported profile picture URL.
@@ -82,6 +86,7 @@ public class GravatarResource {
     @Produces({MediaType.APPLICATION_JSON})
     @Path("settings")
     public Response getSettings(@Context HttpServletRequest httpServletRequest) {
+        if (currentUserIsNotAdministrator()) return Response.status(404).build();
         Map<String, String> settings = gravatarSettingsService.getSettings();
         return Response.ok(settings).build();
     }
@@ -90,9 +95,15 @@ public class GravatarResource {
     @Produces({MediaType.APPLICATION_JSON})
     @Path("settings")
     public Response setSettings(@Context HttpServletRequest httpServletRequest, Map<String, String> newSettings) {
+        if (currentUserIsNotAdministrator()) return Response.status(404).build();
         gravatarSettingsService.setSettings(newSettings);
         Map<String, String> settings = gravatarSettingsService.getSettings();
         return Response.ok(settings).build();
+    }
+
+    private boolean currentUserIsNotAdministrator() {
+        ConfluenceUser user = AuthenticatedUserThreadLocal.get();
+        return user == null || !permissionManager.hasPermission(user, Permission.ADMINISTER, PermissionManager.TARGET_SYSTEM);
     }
 
     public void setGravatarImportService(GravatarImportService gravatarImportService) {
@@ -101,5 +112,9 @@ public class GravatarResource {
 
     public void setGravatarSettingsService(GravatarSettingsService gravatarSettingsService) {
         this.gravatarSettingsService = gravatarSettingsService;
+    }
+
+    public void setPermissionManager(PermissionManager permissionManager) {
+        this.permissionManager = permissionManager;
     }
 }
