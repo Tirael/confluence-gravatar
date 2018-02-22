@@ -7,7 +7,9 @@ import com.thoughtworks.xstream.XStream;
 import net.vicox.confluence.plugins.gravatar.service.GravatarSettingsService;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class BandanaGravatarSettingsService implements GravatarSettingsService {
@@ -15,9 +17,17 @@ public class BandanaGravatarSettingsService implements GravatarSettingsService {
     private static final String BANDANA_KEY = "gravatar.settings";
     private static final BandanaContext BANDANA_CONTEXT = ConfluenceBandanaContext.GLOBAL_CONTEXT;
 
+    private static List<String> ALLOWED_SETTINGS;
+    private static List<String> REQUIRED_SETTINGS;
     private static Map<String, String> DEFAULT_SETTINGS;
 
     static {
+        ALLOWED_SETTINGS = new ArrayList<>();
+        ALLOWED_SETTINGS.add("gravatarServerUrl");
+
+        REQUIRED_SETTINGS = new ArrayList<>();
+        REQUIRED_SETTINGS.add("gravatarServerUrl");
+
         DEFAULT_SETTINGS = new LinkedHashMap<>();
         DEFAULT_SETTINGS.put("gravatarServerUrl", "https://www.gravatar.com/avatar/");
     }
@@ -40,8 +50,11 @@ public class BandanaGravatarSettingsService implements GravatarSettingsService {
     @Override
     public void setSettings(Map<String, String> settings) {
         settings.entrySet().removeIf(entry ->
-                DEFAULT_SETTINGS.get(entry.getKey()) != null
-                        && DEFAULT_SETTINGS.get(entry.getKey()).equals(entry.getValue()));
+                !ALLOWED_SETTINGS.contains(entry.getKey())
+                        || (REQUIRED_SETTINGS.contains(entry.getKey())
+                        && StringUtils.isBlank(entry.getValue()))
+                        || (DEFAULT_SETTINGS.get(entry.getKey()) != null
+                        && DEFAULT_SETTINGS.get(entry.getKey()).equals(entry.getValue())));
         storeSettings(settings);
     }
 
