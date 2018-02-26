@@ -3,8 +3,8 @@
         <description>${project.description}</description>
         <version>${project.version}</version>
         <vendor name="${project.organization.name}" url="${project.organization.url}"/>
-        <param name="plugin-icon">images/gravatarIcon.png</param>
-        <param name="plugin-logo">images/gravatarLogo.png</param>
+        <param name="plugin-icon">gravatar/images/gravatarIcon.png</param>
+        <param name="plugin-logo">gravatar/images/gravatarLogo.png</param>
     </plugin-info>
 
     <resource type="i18n" name="i18n" location="gravatar" />
@@ -13,8 +13,8 @@
         <transformation extension="js">
             <transformer key="jsI18n"/>
         </transformation>
-        <resource type="download" name="gravatar.css" location="gravatar.css"/>
-        <resource type="download" name="gravatar.js" location="gravatar.js"/>
+        <resource type="download" name="gravatar.css" location="gravatar/css/gravatar.css"/>
+        <resource type="download" name="gravatar.js" location="gravatar/js/gravatar.js"/>
         <dependency>com.atlassian.auiplugin:dialog2</dependency>
         <context>atl.userprofile</context>
     </web-resource>
